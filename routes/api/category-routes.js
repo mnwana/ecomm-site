@@ -19,6 +19,23 @@ router.post("/", (req, res) => {
 
 router.put("/:id", (req, res) => {
   // update a category by its `id` value
+  Category.update(req.body, {
+    individualHooks: true,
+    where: {
+      id: req.params.id,
+    },
+  })
+    .then((dbUserData) => {
+      if (!dbUserData[0]) {
+        res.status(404).json({ message: "No category found with this ID" });
+        return;
+      }
+      res.json(dbUserData);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json(err);
+    });
 });
 
 router.delete("/:id", (req, res) => {
@@ -33,6 +50,7 @@ router.delete("/:id", (req, res) => {
         res.status(404).json({ message: "No category found with this ID" });
         return;
       }
+      res.json(dbUserData);
     })
     .catch((err) => {
       console.log(err);
